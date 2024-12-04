@@ -7,10 +7,47 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Role{
-  id Int @id @default(autoincrement())
+enum OrganizationType {
+  Retail
+  wholesale
+}
+
+model Role {
+  id   Int    @id @default(autoincrement())
   name String @unique
+
+  users User[]
 
   @@map("roles")
 }
 
+model Organization {
+  id         Int              @id @default(autoincrement())
+  name       String           @unique
+  type       OrganizationType @default(Retail)
+  address    String?
+  phone      String?          @db.VarChar(15)
+  created_at DateTime         @default(now())
+  updated_at DateTime         @updatedAt
+
+  users User[]
+
+  @@map("organizations")
+}
+
+model User {
+  id              Int      @id @default(autoincrement())
+  role_id         Int
+  organization_id Int
+  name            String
+  email           String   @unique @db.VarChar(191)
+  mobile          String   @unique @db.VarChar(15)
+  password        String
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  role         Role         @relation(fields: [role_id], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organization_id], references: [id], onDelete: Cascade)
+
+  @@map("users")
+}
