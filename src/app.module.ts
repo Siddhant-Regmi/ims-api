@@ -7,9 +7,10 @@ import { OrganizationsModule } from './organizations/organizations.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { ItemsModule } from './items/items.module';
 
 @Module({
-  imports: [ ConfigModule.forRoot(), RolesModule, PrismaModule, OrganizationsModule, UsersModule, AuthModule],
+  imports: [ ConfigModule.forRoot(), RolesModule, PrismaModule, OrganizationsModule, UsersModule, AuthModule, ItemsModule],
   controllers: [AppController],
   providers: [AppService],
 })

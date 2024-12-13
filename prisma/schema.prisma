@@ -12,6 +12,11 @@ enum OrganizationType {
   wholesale
 }
 
+enum DiscountType {
+  rate
+  amount
+}
+
 model Role {
   id   Int    @id @default(autoincrement())
   name String @unique
@@ -31,6 +36,7 @@ model Organization {
   updated_at DateTime         @updatedAt
 
   users User[]
+  item_organizations ItemOrganization[]
 
   @@map("organizations")
 }
@@ -50,4 +56,28 @@ model User {
   organization Organization @relation(fields: [organization_id], references: [id], onDelete: Cascade)
 
   @@map("users")
+}
+
+model Item {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  organizations ItemOrganization[]
+
+  @@map("items")
+}
+
+model ItemOrganization{
+  item_id Int
+  organization_id Int
+  quantity Decimal @db.Decimal(15, 2) @default(0)
+
+  item Item @relation(fields: [item_id], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organization_id], references: [id], onDelete: Cascade)
+
+  @@id([item_id, organization_id])
+  @@map("item_organizations")
 }
